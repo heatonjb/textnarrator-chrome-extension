@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 
-	"name": "Text Narrator",
-	"description": "This extension narrates text on the page.",
+	"name": "Tweetout  Twitter Realtime Text to Speech",
+	"description": "This extension audibly alerts you to new tweets and can read them out too.",
 	"version": "1.0",
 	"background": {
 		"scripts": ["narrate.js", "background.js"]
@@ -10,7 +10,11 @@
 	"icons": { 
 		"16": "img/speak16.png",
 		"48": "img/speak48.png",
-		"128": "img/speak.png" 
+		"128": "img/speak.png",
+		"16": "img/KnobLoopOn16.png",
+        "32": "img/KnobLoopOn.png",
+        "48": "img/KnobLoopOn48.png",
+        "128": "img/KnobLoopOn128.png"
 	},
 	"permissions": [
 		"contextMenus",
@@ -23,4 +27,5 @@
 		"default_icon": "img/speak.png",
 		"default_popup": "popup.html"
 	}
+	
 }

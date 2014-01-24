@@ -11,6 +11,11 @@ if(!inited) {
 	});
 
 	getSelectionUtterance = function() {
+
+
+		
+
+		
 		var s = window.getSelection().toString();
 		if(s && s.length) {
 			chrome.runtime.sendMessage({utterance: s.toString()}, function(response) {
@@ -24,3 +29,4 @@ if(!inited) {
 	inited = true;
 }
 inited;
+
