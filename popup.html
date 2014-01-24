@@ -45,10 +45,19 @@
 		<hr>
 		
 		<div style="width:10pc;color:black;font-family:sans-serif;font-size:small">
-    Reload page every:
+   
         <form name="reload_options" onsubmit="setReloader()" >
-    	<!-- Poor man's menu emulation.  TODO: highlight when mouse is over -->
-    	<!-- XXX Replace the hard-coded indices -->
+    	 Read New Tweet:
+    	
+ 		<div style="color:black" width="100%">
+	   		 <input type="radio" name="readOption" id="readCount" value="readCount" checked>Count
+		</div>
+		<div style="color:black" width="100%">
+	   		 <input type="radio" name="readOption" id="readText" value="readText">Text
+		</div>
+    	 
+
+    	 Reload page every:
     	<div style="color:black" width="100%" onclick="document.reload_options.reloadOption[0].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload0" value="0" checked>Never
     	</div>

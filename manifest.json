@@ -3,7 +3,7 @@
 
 	"name": "Tweetout  Twitter Realtime Text to Speech",
 	"description": "This extension audibly alerts you to new tweets and can read them out too.",
-	"version": "1.0",
+	"version": "0.1",
 	"background": {
 		"scripts": ["narrate.js", "background.js"]
 	},

@@ -1,5 +1,7 @@
 var lastTweetRead = 0;
 var readQueue = [];
+var speak = false;
+var speaking = false;
 //console.log("setting the shit to 000000000");
 
 
@@ -59,12 +61,14 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     
 
     function executeJSScript (tab) {
-		chrome.tabs.executeScript(null, {file: "inject.js"}	);	
+		chrome.tabs.executeScript(tab, {file: "inject.js"}	);	
 	}
 
 
-    function doReloader(time, isRandom) {
+    function doReloader(time, isRandom,speakit) {
     	console.log("doReloader function");
+    	speak = speakit;
+    	console.log("Speak is set too " + speak);
         if (time > 0) {
             chrome.tabs.getSelected(null, function(tab) {
 
@@ -260,15 +264,48 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     }
 
     function doReload(tab_id) {
-        chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tab_id});
-        chrome.browserAction.setBadgeText({text:'', tabId:tab_id});
 
-        // need to work out a way to make POST'ed pages reload
-        chrome.tabs.update(tab_id, {url: tabs[tab_id].action_url});
-        //chrome.tabs.executeScript(tab_id, {code: 'window.location.reload()'});
 
-        executeJSScript();
+    	if(speaking == false){
+	        chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tab_id});
+	        chrome.browserAction.setBadgeText({text:'', tabId:tab_id});
 
+	        // need to work out a way to make POST'ed pages reload
+	        chrome.tabs.update(tab_id, {url: tabs[tab_id].action_url});
+	        //chrome.tabs.executeScript(tab_id, {code: 'window.location.reload()'});
+
+	        executeJSScript(tab_id);
+    	}else{
+    		// reset the timer for the countdown
+                tabs[tab_id].seconds_to_next_reload = tabs[tab_id].ms_between_load/1000;
+
+
+                
+                // and set the correct countdown text
+                setBadgeText(tab_id);
+
+                // set a timeout for the next reload
+                setupReloadTimer(tab_id);
+
+                // make really sure this timeout is cancelled before we add a new one
+                cancelDisplayTimer(tab_id);
+
+                // setup the reload countdown
+                tabs[tab_id].displayTimer = window.setInterval(function(tab_id) {
+                        tabs[tab_id].seconds_to_next_reload--;
+                        setBadgeText(tab_id);
+                    }, 1000, tab_id);
+    	}
+
+    }
+
+    function readTweetQueue(){
+    	if(readQueue.length < 1){
+    		return;
+    	}else{
+    		var tweet = readQueue.pop();
+    		narrate(tweet['text'],readTweetQueue());
+    	}
     }
 
     chrome.runtime.onMessage.addListener(
@@ -276,7 +313,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	    console.log(sender.tab ?
 	                "from a content script:" + sender.tab.url :
 	                "from the extension");
-	    
+	    console.log(request);
 	
 	    if (typeof request.setlastread != 'undefined')
 	    {
@@ -300,6 +337,21 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	    {	
 	      	 narrate(request.read);
 	  	}
+	  	if (typeof request.passReadQueue != 'undefined') 
+	    {	
+	      	 console.log('got new readQueye');
+	      	 console.log(request.passReadQueue);
+	      	 speaking = true;
+	      	 if(speak == false){
+	      	 	narrate(passReadQueue.length + " New Tweets");
+	      	 }else{
+	      	 	readQueue = request.passReadQueue;
+	      	 	readTweetQueue();
+	      	 }
+	      	 speaking = false;
+	      	 sendResponse();
+	  	}
+	  	
 	  	console.log("end message");
 	  });
 

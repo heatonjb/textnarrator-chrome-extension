@@ -69,6 +69,7 @@ function restoreOptions() {
 function setTime(){
 	bkg.console.log('setTime');
 	var option = 0;
+	var speak = false;
         var isRandom = false;
  
         for( i = 0; i < document.reload_options.reloadOption.length; i++ ) {
@@ -91,12 +92,16 @@ function setTime(){
         		option = 0;
     	    }
     	}
+
+    	if (document.getElementById('readText').checked == true) {
+    		speak = true;
+    	}
         
         
         var views = chrome.extension.getViews();
         for (var i in views) {
             if (views[i].doReloader) {
-                views[i].doReloader(option, isRandom);
+                views[i].doReloader(option, isRandom,speak);
             }
         }
 }   

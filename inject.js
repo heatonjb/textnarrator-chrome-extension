@@ -137,6 +137,12 @@ function readOut(msg){
 	});
 }
 
+function passReadQueue(){
+	chrome.runtime.sendMessage({passReadQueue: readQueue }, function(response) {
+	  //
+	});
+}
+
 
 function processNewTweets(latestId,lastReadId){
 	console.log('processNewTweets');
@@ -151,8 +157,10 @@ function processNewTweets(latestId,lastReadId){
 		 }
 	  };
 
-	readOut(readQueue.length + " " + " new tweets");
+	//readOut(readQueue.length + " " + " new tweets");
 	console.log('read Queue length = '+ readQueue.length);
+	passReadQueue();
+	setLastRead(getLatestTweet()['id']);
 	//read all tweets only allow reload on complete
 	//read num new tweets or beeep
 
