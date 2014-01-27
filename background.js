@@ -1,4 +1,4 @@
-var lastTweetRead = '-';
+var lastTweetRead = '---';
 var readQueue = [];
 var speak = false;
 var speaking = false;
@@ -312,8 +312,9 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     	if(readQueue.length < 1){
     		return;
     	}else{
-    		var tweet = readQueue.shift();
+    		var tweet = readQueue.pop();
             lastTweetRead = tweet['text'];
+            console.log('setting lastTweetRead to :'+ lastTweetRead);
     		narrate(stripStuff(tweet['text']),readTweetQueue());
     	}
     }
@@ -333,7 +334,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	    }
 	    if (typeof request.getlastread != 'undefined') 
 	    {
-	      	lastTweetRead = lastTweetRead;
+	      	console.log('returning last read = '+ lastTweetRead);
 	      	sendResponse({lastread: lastTweetRead });
 	  	}
 	  	if (typeof request.readTweet != 'undefined') 
@@ -374,7 +375,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	      	 sendResponse();
 	  	}
 	  	
-	  	console.log("end message");
+	  	    console.log("end message");
 	  });
 
     

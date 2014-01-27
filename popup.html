@@ -3,6 +3,11 @@
   <head>
     <title>Tweetout</title>
 	<style type="text/css">
+    body {
+      color: #fff;
+      background-color: #00adee;
+      font-family: helvetica;
+    }
 		button {
 			padding: 0px;
 			border: 1px solid rgb(200,200,200);
@@ -12,10 +17,12 @@
 		}
 		button img {
 			vertical-align: bottom;
+      height: 40px;
+      width: 40px;
 		}
 		
 		#advancedlink {
-			font-family: Calibri, Verdana, sans serif;
+			font-family: helvetica,Calibri, Verdana, sans serif;
 			font-size: .6em;
 		}
 		
@@ -33,44 +40,45 @@
 	<script src="popup.js"></script>
   </head>
   <body onload="restoreOptions()">
- <!--  	<button id="reloadStart"><img src="img/KnobLoopOn.png" title="Start Reloading" alt="Start Reloading"></button>
-  	<button id="reloadStop"><img src="img/KnobLoopOff.png" title="Stop Reloading" alt="Stop Reloading"></button>
-	<button id="narrate"><img src="img/speak32.png" title="Speak" alt="Speak"></button> -->
+<!--    <button ><img id="start" src="ios7-play-outline.png" title="Play/Resume" alt="Play/Resume"></button>
+	 <button ><img id="pause" src="ios7-pause-outline.png" title="pause" alt="pause"></button> 
+   <button ><img id="stop" src="stop.png" title="Stop" alt="Stop"></button> -->
 	<!-- <button id="stop"><img src="img/stop32.png" title="Stop" alt="Stop"></button>
 	<button id="pauseresume"><img id="pauseresume_img" src="img/pause32.png" title="Pause/Resume" alt="Pause/Resume"></button> -->
 	<div>
-		<h1>Tweetout Settings</h1>
+		<h1>Tweet-out Settings</h1>
+    <p style="width:10pc;color:white;font-family:sans-serif;font-size:small">Please always first select your Tweet Alert type followed by your refresh frequency.</p>
 	</div>
 	<div id="advancedsectionx">
 		<hr>
 		
-		<div style="width:10pc;color:black;font-family:sans-serif;font-size:small">
+		<div style="width:10pc;color:white;font-family:sans-serif;font-size:small">
    
         <form name="reload_options" onsubmit="setReloader()" >
-    	 Tweet Alert:
+    	 1 - Tweet Alert:
     	
- 		<div style="color:black" width="100%">
+ 		<div style="color:white" width="100%">
 	   		 <input type="radio" name="readOption" id="readCount" value="readCount" checked>Beep
 		</div>
-		<div style="color:black" width="100%">
+		<div style="color:white" width="100%">
 	   		 <input type="radio" name="readOption" id="readText" value="readText">Read Tweets
 		</div>
     	 
 
-    	 Reload page every:
-    	<div style="color:black" width="100%" onclick="document.reload_options.reloadOption[0].checked = true; setReloader()">
+    	 2 - Reload page every:
+    	<div style="color:white" width="100%" onclick="document.reload_options.reloadOption[0].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload0" value="0" checked>Never
     	</div>
-        <div style="color:black" width="100%" onclick="document.reload_options.reloadOption[1].checked = true; setReloader()">
+        <div style="color:white" width="100%" onclick="document.reload_options.reloadOption[1].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption"  id="reload5" value="5000">5 seconds
     	</div>
-        <div style="color:black" width="100%" onclick="document.reload_options.reloadOption[2].checked = true; setReloader()">
+        <div style="color:white" width="100%" onclick="document.reload_options.reloadOption[2].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload15" value="15000">15 seconds
     	</div>
-        <div style="color:black" width="100%" onclick="document.reload_options.reloadOption[3].checked = true; setReloader()">
+        <div style="color:white" width="100%" onclick="document.reload_options.reloadOption[3].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload30" value="30000">30 seconds
     	</div>
-        <div style="color:black" width="100%" onclick="document.reload_options.reloadOption[4].checked = true; setReloader()">
+        <div style="color:white" width="100%" onclick="document.reload_options.reloadOption[4].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload60" value="60000">1 minute
     	</div>
         
@@ -79,7 +87,7 @@
     	<!-- Free-form input -->
     	<!-- TODO: days/hours/minutes -->
     	<!-- XXX when the time is *real* high, like 999999999999999999999999999999999 seconds, the page just keeps reloading instantly -->
-    	<div style="color:black" id="freeFormDiv" width="100%">
+    	<div style="color:white" id="freeFormDiv" width="100%">
     	    <input type="radio" name="reloadOption" value="" id="freeForm" onclick="var f = document.reload_options.reloadOptionSeconds; f.focus(); f.select()" />
     	    <input type="number" id="reloadMisc" name="reloadOptionSeconds" value="" size="2" onchange="document.getElementById('freeForm').checked = true" onunfocus="setReloader()" />seconds<br />
     	</div>

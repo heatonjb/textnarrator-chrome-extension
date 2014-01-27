@@ -135,9 +135,7 @@ function Init() {
  //        window.close();
 	// });
 
-	// document.getElementById("reloadStop").addEventListener("click", function(e) { 
-	// 	bkg.console.log('reloadStop');
-	// });
+
 
 	document.getElementById("reload0").addEventListener("click", function(e) { 
 		setTime();
@@ -179,42 +177,40 @@ function Init() {
 	// 	});
 	// });
 
-	document.getElementById("advancedlink").addEventListener("click", function(e) { 
-		var el = document.getElementById("advancedsection");
-		
-		
-		
 
-		el.style.display = (getComputedStyle(el).display == "block") ? "none" : "block";
-	});
 	
-	document.getElementById("testbutton").addEventListener("click", function(e) { 
-		narrate(document.getElementById("testText").value);
-		Render();
+	document.getElementById("play").addEventListener("click", function(e) { 
+		chrome.tts.resume();
+		bkg.console.log("Resumed.");
+		setTime();
+	});
+
+	document.getElementById("pause").addEventListener("click", function(e) { 
+		bkg.console.log("Paused.");
+		chrome.tts.pause();
 	});
 
 	document.getElementById("stop").addEventListener("click", function(e) { 
+		bkg.console.log("stop.");
 		chrome.tts.stop();
-		paused = false;
-		Render();
 	});
 	
-	document.getElementById("pauseresume").addEventListener("click", function(e) { 
+	// document.getElementById("pauseresume").addEventListener("click", function(e) { 
 		
-		chrome.tts.isSpeaking(function(isSpeaking) {
-			bkg.console.log("Chrome TTS: " + (isSpeaking ? "is speaking" : "is not speaking"));
-			if(isSpeaking && !paused) {
-				chrome.tts.pause();
-				paused = true; 
-				bkg.console.log("Paused.");
-			} else {
-				chrome.tts.resume();
-				paused = false;
-				bkg.console.log("Resumed.");
-			}			
-			Render();
-		});
-	});
+	// 	chrome.tts.isSpeaking(function(isSpeaking) {
+	// 		bkg.console.log("Chrome TTS: " + (isSpeaking ? "is speaking" : "is not speaking"));
+	// 		if(isSpeaking && !paused) {
+	// 			chrome.tts.pause();
+	// 			paused = true; 
+	// 			bkg.console.log("Paused.");
+	// 		} else {
+	// 			chrome.tts.resume();
+	// 			paused = false;
+	// 			bkg.console.log("Resumed.");
+	// 		}			
+	// 		Render();
+	// 	});
+	// });
 
 
 

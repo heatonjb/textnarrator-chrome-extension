@@ -128,13 +128,14 @@ function processNewTweets(latestId,lastReadId){
 		 	readQueue.push(tweets[i]);
 		 }
 	  };
-
-	//readOut(readQueue.length + " " + " new tweets");
-	console.log('read Queue length = '+ readQueue.length);
-	passReadQueue();
-	//setLastRead(getLatestTweet()['id']);
-	//read all tweets only allow reload on complete
-	//read num new tweets or beeep
+	  if(seenTheId == false){
+	  	var latestId = getLatestTweet()['text'];
+	  	setLastRead(latestId);
+	  }else{
+		console.log('read Queue length = '+ readQueue.length);
+		passReadQueue();
+	}
+	
 
 }
 
@@ -148,7 +149,7 @@ function startThis(){
 
 	if(latestId !== lastReadId){
 		console.log('new tweets so do something');
-		if(lastReadId == 0){
+		if(lastReadId == '---'){
 			setLastRead(latestId);
 		}else{
 			if(audible == 'beep'){
