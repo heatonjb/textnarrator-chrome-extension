@@ -1,7 +1,8 @@
 var db = [];
 var myInfinity = 10000000000;
-var lastReadId = 0;
+var lastReadId = '---';
 var readQueue = [];
+var audible = "beep";
 
 
 function getUsers () {
@@ -36,7 +37,6 @@ function getTimes () {
 
 
 function getTweets() {
-	console.log("getTweets");
 	var tweet = document.evaluate("//li[@class='js-stream-item stream-item stream-item expanding-stream-item']", document, null, XPathResult.ANY_TYPE, null);
 	var iterator = tweet.iterateNext();
 
@@ -64,54 +64,18 @@ function tweetsCounter() {
 }
 
 
-function startScraping(tweetsAmount) {
-	var tweets = getTweets();
-	var users = getUsers();
-	var times = getTimes();
-
-	var tweetsLength = tweets.length;
-
-	for(var i = 0; i <= tweetsAmount - 1; i++) {
-		var item = {"User": users[i],"Time": times[i], "Tweet": tweets[i]};
-		db.push(item);
-	};
-
-	var json_text = JSON.stringify(db, null, 2);
-	console.log(json_text);
-	console.log("END SCRAPING NOW>>>>....");
-}
 
 
-function scrollBottom(tweetsAmount) {
-	console.log("scrollBottom....");
-	setInterval(function timeOut() {
-		var tweetsLength = tweetsCounter();
-		document.body.scrollTop = myInfinity;
-		
-		if (tweetsLength < tweetsAmount) {
-			scrollBottom(tweetsAmount);
-		}
-		else {
-			startScraping(tweetsAmount);		
-		}
 
-	}, 9000);
-}
+
 
 function getLatestTweet(){
 	var tweets = getTweets();
-	console.log(tweets.length);
-	 // for(var i = tweets.length-1; i >= 0; i--) {
-		// console.log(tweets[i]);
-		// console.log(i);
-	 // };
 	return tweets[0];
 }
 
 function getLastRead(){
-	console.log('getlastread');
 	chrome.runtime.sendMessage({getlastread: "id"}, function(response) {
-	  console.log("lastread repsponse = " + response.lastread);
 	  lastReadId = response.lastread;
 	  startThis();
 	});
@@ -119,15 +83,12 @@ function getLastRead(){
 
 function setLastRead(id){
 	console.log('setLastRead to- '+ id);
-	
 	chrome.runtime.sendMessage({setlastread: id }, function(response) {
-	  console.log('updated - '  + response.lastread);
 	});
 }
 
 function readTweet(tweet){
 	chrome.runtime.sendMessage({readTweet: tweet }, function(response) {
-	  console.log('readTweet added count = '  + response.readQueueLength);
 	});
 }
 
@@ -143,16 +104,27 @@ function passReadQueue(){
 	});
 }
 
+function getTweetorBeep(){
+	chrome.runtime.sendMessage({tweetorbeep: 'tweetorbeep' }, function(response) {
+	  audible = response.tweetorbeep;
+	});
+}
+
 
 function processNewTweets(latestId,lastReadId){
 	console.log('processNewTweets');
 	var tweets = getTweets();
 	var newTweets = 0;
+	var seenTheId = false;
 	console.log("total tweets to process = " + tweets.length);
 	  for(var i = tweets.length-1; i >= 0; i--) {
 		 console.log(tweets[i]['id'] + " - " +  tweets[i]['text']);
-		 var cId = parseInt(tweets[i]['id']);
-		 if(cId > lastReadId ){
+		 var cId = tweets[i]['text'];
+		 if(cId == lastReadId ){
+		 	seenTheId = true;
+		 	continue;
+		 }
+		 if(seenTheId == true){
 		 	readQueue.push(tweets[i]);
 		 }
 	  };
@@ -160,27 +132,31 @@ function processNewTweets(latestId,lastReadId){
 	//readOut(readQueue.length + " " + " new tweets");
 	console.log('read Queue length = '+ readQueue.length);
 	passReadQueue();
-	setLastRead(getLatestTweet()['id']);
+	//setLastRead(getLatestTweet()['id']);
 	//read all tweets only allow reload on complete
 	//read num new tweets or beeep
 
 }
 
 function startThis(){
-	console.log('statthis inject.js');
 	// var tweetss = getTweets();
-	var latestId = parseInt(getLatestTweet()['id']);
+	var latestId = getLatestTweet()['text'];
 	
 
 	console.log("latestid = "+ latestId);
 	console.log("lastReadId = "+ lastReadId);
 
-	if(latestId > lastReadId){
+	if(latestId !== lastReadId){
 		console.log('new tweets so do something');
 		if(lastReadId == 0){
 			setLastRead(latestId);
 		}else{
-			processNewTweets(latestId,lastReadId);
+			if(audible == 'beep'){
+				PlaySound();
+				setLastRead(getLatestTweet()['text']);
+			}else{
+				processNewTweets(latestId,lastReadId);
+			}
 		}
 
 	}else{
@@ -191,7 +167,25 @@ function startThis(){
 	
 }
 
+
+
+function PlaySound() {
+    
+     var html = '<audio id="audio1" src="beep-1.wav" style="display:block;" controls="show" preload="auto" autobuffer></audio>';
+   // var el1 = document.createElement('<div></div>');
+   //  document.getElementById("doc").appendChild(el1);
+
+ 
+    var audio = document.createElement("audio");
+	audio.src = "http://tweet-out.com/static/beep-027.wav";
+	document.body.appendChild(audio);
+
+    audio.play();
+  }
+
+
 function init(){
+	getTweetorBeep();
 	getLastRead();
 }
 
@@ -199,5 +193,5 @@ function init(){
 // Loop through all tweets from oldest bottom first
 // if
 
-console.log('injected');
+
 init();

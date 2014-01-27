@@ -114,30 +114,30 @@ function Init() {
 
 
 	var Render = function() {
-		document.getElementById("pauseresume_img").src = chrome.extension.getURL(paused ? "img/play32.png" : "img/pause32.png");
+		// document.getElementById("pauseresume_img").src = chrome.extension.getURL(paused ? "img/play32.png" : "img/pause32.png");
 	};
 
 	
 	
 
-	document.getElementById("reloadStart").addEventListener("click", function(e) { 
-		bkg.console.log('reloadStart');
-		var views = chrome.extension.getViews();
-        for (var i in views) {
-        	bkg.console.log(i);
-        	views[i].doReloader(option, isRandom);
-            if (views[i].doReloader) {
-            	bkg.console.log('doReloader x');
-                views[i].doReloader(option, isRandom);
-            }
-        }
-        bkg.console.log('reloadStart end');
-        window.close();
-	});
+	// document.getElementById("reloadStart").addEventListener("click", function(e) { 
+	// 	bkg.console.log('reloadStart');
+	// 	var views = chrome.extension.getViews();
+ //        for (var i in views) {
+ //        	bkg.console.log(i);
+ //        	views[i].doReloader(option, isRandom);
+ //            if (views[i].doReloader) {
+ //            	bkg.console.log('doReloader x');
+ //                views[i].doReloader(option, isRandom);
+ //            }
+ //        }
+ //        bkg.console.log('reloadStart end');
+ //        window.close();
+	// });
 
-	document.getElementById("reloadStop").addEventListener("click", function(e) { 
-		bkg.console.log('reloadStop');
-	});
+	// document.getElementById("reloadStop").addEventListener("click", function(e) { 
+	// 	bkg.console.log('reloadStop');
+	// });
 
 	document.getElementById("reload0").addEventListener("click", function(e) { 
 		setTime();
@@ -167,17 +167,17 @@ function Init() {
 
 	
 
-	document.getElementById("narrate").addEventListener("click", function(e) { 
-		chrome.tabs.query({ active: true }, function(tabs) {
-			tabs.forEach(function(tab) {
-				chrome.tabs.executeScript(tab.id, {file: "content_script.narrator.js" }, function(results) {
-					if(results && results.every(function(o) { return o; })) {
-						chrome.tabs.sendMessage(tab.id, { command: "getSelectionUtterance" });
-					}
-				});
-			});
-		});
-	});
+	// document.getElementById("narrate").addEventListener("click", function(e) { 
+	// 	chrome.tabs.query({ active: true }, function(tabs) {
+	// 		tabs.forEach(function(tab) {
+	// 			chrome.tabs.executeScript(tab.id, {file: "content_script.narrator.js" }, function(results) {
+	// 				if(results && results.every(function(o) { return o; })) {
+	// 					chrome.tabs.sendMessage(tab.id, { command: "getSelectionUtterance" });
+	// 				}
+	// 			});
+	// 		});
+	// 	});
+	// });
 
 	document.getElementById("advancedlink").addEventListener("click", function(e) { 
 		var el = document.getElementById("advancedsection");

@@ -4,7 +4,8 @@ function narrate(utterance, callback) {
 		{ 
 			onEvent: function(ttsEvent) {
 				if(ttsEvent.type == "error") { console.error("TTS Error:", ttsEvent); }
-			}
+			},
+			'enqueue': true
 		},
 		function() {
 			if(chrome.runtime.lastError !== undefined) { 

@@ -1,4 +1,4 @@
-var lastTweetRead = 0;
+var lastTweetRead = '-';
 var readQueue = [];
 var speak = false;
 var speaking = false;
@@ -299,12 +299,22 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
     }
 
+    function stripStuff(str){
+        rex = /(<a href=")?(?:https?:\/\/)?(?:\w+\.)+\w+/g;    
+        str2 = str.replace( rex, '' );
+        rex2 = /(\/\w+)+/gi ;   
+        str3 = str2.replace( rex2, '' );
+        console.log("stripped tweet text = " + str3);
+        return str3;
+    }
+
     function readTweetQueue(){
     	if(readQueue.length < 1){
     		return;
     	}else{
-    		var tweet = readQueue.pop();
-    		narrate(tweet['text'],readTweetQueue());
+    		var tweet = readQueue.shift();
+            lastTweetRead = tweet['text'];
+    		narrate(stripStuff(tweet['text']),readTweetQueue());
     	}
     }
 
@@ -318,8 +328,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	    if (typeof request.setlastread != 'undefined')
 	    {
 	    	console.log("setting lastread tweet in background to "+ request.setlastread);
-	    	newlastTweetRead = parseInt(request.setlastread);
-	    	if(newlastTweetRead > lastTweetRead) lastTweetRead = newlastTweetRead;
+	    	lastTweetRead = request.setlastread;
 	    	sendResponse({lastread: lastTweetRead });
 	    }
 	    if (typeof request.getlastread != 'undefined') 
@@ -337,6 +346,19 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	    {	
 	      	 narrate(request.read);
 	  	}
+        if (typeof request.tweetorbeep != 'undefined') 
+        {   
+             
+            if(speak == false){
+                var audible = 'beep';
+             }else{
+                var audible = 'speak';
+             }
+             
+             console.log('beep + '+ audible);
+             sendResponse({tweetorbeep: audible });
+        }
+        
 	  	if (typeof request.passReadQueue != 'undefined') 
 	    {	
 	      	 console.log('got new readQueye');
