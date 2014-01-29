@@ -7,6 +7,8 @@
       color: #fff;
       background-color: #00adee;
       font-family: helvetica;
+      background: url('/img/tweetout.png') #00adee no-repeat top center;
+      width: 329px;
     }
 		button {
 			padding: 0px;
@@ -29,6 +31,10 @@
 		#advancedsection {
 			display: none;
 		}
+    #settings {
+      margin: 169px 0px 0px 0px;
+      width: 100%
+    }
 	</style>
     <!--
       - JavaScript and HTML must be in separate files: see our Content Security
@@ -45,14 +51,14 @@
    <button ><img id="stop" src="stop.png" title="Stop" alt="Stop"></button> -->
 	<!-- <button id="stop"><img src="img/stop32.png" title="Stop" alt="Stop"></button>
 	<button id="pauseresume"><img id="pauseresume_img" src="img/pause32.png" title="Pause/Resume" alt="Pause/Resume"></button> -->
-	<div>
-		<h1>Tweet-out Settings</h1>
-    <p style="width:10pc;color:white;font-family:sans-serif;font-size:small">Please always first select your Tweet Alert type followed by your refresh frequency.</p>
+	<div id="settings">
+		
+    <p style="color:white;font-family:sans-serif;font-size:small">Select your Tweet Alert type followed by your refresh frequency.</p>
 	</div>
 	<div id="advancedsectionx">
 		<hr>
 		
-		<div style="width:10pc;color:white;font-family:sans-serif;font-size:small">
+		<div style="width:45%; float: left; color:white;font-family:sans-serif;font-size:small">
    
         <form name="reload_options" onsubmit="setReloader()" >
     	 1 - Tweet Alert:
@@ -63,8 +69,9 @@
 		<div style="color:white" width="100%">
 	   		 <input type="radio" name="readOption" id="readText" value="readText">Read Tweets
 		</div>
-    	 
-
+    
+    </div>	 
+    <div style="width:45%; float: left; color:white;font-family:sans-serif;font-size:small">
     	 2 - Reload page every:
     	<div style="color:white" width="100%" onclick="document.reload_options.reloadOption[0].checked = true; setReloader()">
     	    <input type="radio" name="reloadOption" id="reload0" value="0" checked>Never
@@ -96,7 +103,7 @@
     </form>
      
 
-</div>
+    </div>
 
 
 	</div>

@@ -2,29 +2,6 @@ var lastTweetRead = '---';
 var readQueue = [];
 var speak = false;
 var speaking = false;
-//console.log("setting the shit to 000000000");
-
-
-chrome.contextMenus.create({
-		type: "normal",
-		title: "Narrate Selected Text",
-		contexts: ["selection"],
-		onclick: function(info, tabs) {
-			var s = info.selectionText;
-			if(s && s.length) {
-				narrate(s, function(response) {
-					if(response) { console.log(response); }
-				});
-			} else {
-				console.log("Nothing to narrate.");
-			}
-		}
-	}, 
-	function() {
-		if(chrome.runtime.lastError !== undefined) { 
-			console.error("Runtime error:", chrome.runtime.lastError.message); 
-		}
-	});
 
 
 var tabStorage = [];
@@ -66,9 +43,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
 
     function doReloader(time, isRandom,speakit) {
-    	console.log("doReloader function");
     	speak = speakit;
-    	console.log("Speak is set too " + speak);
         if (time > 0) {
             chrome.tabs.getSelected(null, function(tab) {
 
@@ -85,7 +60,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
                 chrome.tabs.onUpdated.addListener(onUpdateListener);
 
-                chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tab.id});
+                chrome.browserAction.setIcon({path:"ios7-play-outline.png", tabId:tab.id});
 
                 // reload the page
                 // timers are set for the next reload (and a display timer) in the page load listener
@@ -115,7 +90,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                     cancelReload(tabId);
                 } else {
                     // reset the icon (it is cleared when reloaded)
-                    chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tabId}); // the icon is reset when the page is reloaded
+                    chrome.browserAction.setIcon({path:"/img/tweet128.png", tabId:tabId}); // the icon is reset when the page is reloaded
 
 
                     // Cancel the timer display while the tab is reloading
@@ -131,7 +106,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 // page has just completed loading
 
                 // reset the icon (it is cleared when reloaded)
-                chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tabId}); // the icon is reset when the page is reloaded
+                chrome.browserAction.setIcon({path:"/img/tweet128.png", tabId:tabId}); // the icon is reset when the page is reloaded
 
                 // if we are using random timouts then we need to reset the time related variables here
                 if (tabs[tabId]['is_random']) {
@@ -258,7 +233,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
         }
         tabs[tab_id].ms_between_load = 0;
         tabs[tab_id].seconds_to_next_reload = 0;
-        chrome.browserAction.setIcon({path:"img/KnobLoopOff.png", tabId:tab_id});
+        chrome.browserAction.setIcon({path:"/img/tweet128.png", tabId:tab_id});
         chrome.browserAction.setBadgeText({text:String(), tabId:tab_id});
 
     }
@@ -267,7 +242,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 
 
     	if(speaking == false){
-	        chrome.browserAction.setIcon({path:"img/KnobLoopOn.png", tabId:tab_id});
+	        chrome.browserAction.setIcon({path:"/img/tweet128.png", tabId:tab_id});
 	        chrome.browserAction.setBadgeText({text:'', tabId:tab_id});
 
 	        // need to work out a way to make POST'ed pages reload
@@ -300,11 +275,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     }
 
     function stripStuff(str){
-        rex = /(<a href=")?(?:https?:\/\/)?(?:\w+\.)+\w+/g;    
+        rex = /(<a href=")?(?:https?:\/\/)?(?:\S+\.)+\S+/g;        
         str2 = str.replace( rex, '' );
         rex2 = /(\/\w+)+/gi ;   
         str3 = str2.replace( rex2, '' );
-        console.log("stripped tweet text = " + str3);
         return str3;
     }
 
@@ -314,34 +288,26 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     	}else{
     		var tweet = readQueue.pop();
             lastTweetRead = tweet['text'];
-            console.log('setting lastTweetRead to :'+ lastTweetRead);
     		narrate(stripStuff(tweet['text']),readTweetQueue());
     	}
     }
 
     chrome.runtime.onMessage.addListener(
 	  function(request, sender, sendResponse) {
-	    console.log(sender.tab ?
-	                "from a content script:" + sender.tab.url :
-	                "from the extension");
-	    console.log(request);
-	
+	   	
 	    if (typeof request.setlastread != 'undefined')
 	    {
-	    	console.log("setting lastread tweet in background to "+ request.setlastread);
 	    	lastTweetRead = request.setlastread;
 	    	sendResponse({lastread: lastTweetRead });
 	    }
 	    if (typeof request.getlastread != 'undefined') 
 	    {
-	      	console.log('returning last read = '+ lastTweetRead);
 	      	sendResponse({lastread: lastTweetRead });
 	  	}
 	  	if (typeof request.readTweet != 'undefined') 
 	    {
 	      	readQueue.push(readTweet);
 	      	sendResponse({readQueueLength: readQueue.length });
-	      	console.log("Added to readquue length = " + readQueue.length);
 	  	}
 	  	if (typeof request.read != 'undefined') 
 	    {	
@@ -356,14 +322,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
                 var audible = 'speak';
              }
              
-             console.log('beep + '+ audible);
              sendResponse({tweetorbeep: audible });
         }
         
 	  	if (typeof request.passReadQueue != 'undefined') 
 	    {	
-	      	 console.log('got new readQueye');
-	      	 console.log(request.passReadQueue);
 	      	 speaking = true;
 	      	 if(speak == false){
 	      	 	narrate(passReadQueue.length + " New Tweets");
@@ -375,7 +338,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	      	 sendResponse();
 	  	}
 	  	
-	  	    console.log("end message");
 	  });
 
     

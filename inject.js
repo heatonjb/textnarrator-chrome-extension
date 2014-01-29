@@ -5,35 +5,8 @@ var readQueue = [];
 var audible = "beep";
 
 
-function getUsers () {
 
-	var user = document.evaluate("//span[@class='username js-action-profile-name']/b", document, null, XPathResult.ANY_TYPE, null);
-	var iterator = user.iterateNext();
 
-	var users = [];
-
-	while(iterator) {
-		users.push(iterator.textContent);
-		iterator = user.iterateNext();
-	}
-
-	return users;
-}
-
-function getTimes () {
-									
-	var time = document.evaluate("//span[@class='_timestamp js-short-timestamp js-relative-timestamp']/b", document, null, XPathResult.ANY_TYPE, null);
-	var iterator = time.iterateNext();
-
-	var times = [];
-
-	while(iterator) {
-		times.push(iterator.textContent);
-		iterator = time.iterateNext();
-	}
-
-	return times;
-}
 
 
 function getTweets() {
@@ -55,20 +28,6 @@ function getTweets() {
 
 
 
-
-function tweetsCounter() {
-	var tweets = getTweets();
-	var tweetsLength = tweets.length;
-
-	return tweetsLength;
-}
-
-
-
-
-
-
-
 function getLatestTweet(){
 	var tweets = getTweets();
 	return tweets[0];
@@ -82,7 +41,6 @@ function getLastRead(){
 }
 
 function setLastRead(id){
-	console.log('setLastRead to- '+ id);
 	chrome.runtime.sendMessage({setlastread: id }, function(response) {
 	});
 }
@@ -112,13 +70,10 @@ function getTweetorBeep(){
 
 
 function processNewTweets(latestId,lastReadId){
-	console.log('processNewTweets');
 	var tweets = getTweets();
 	var newTweets = 0;
 	var seenTheId = false;
-	console.log("total tweets to process = " + tweets.length);
 	  for(var i = tweets.length-1; i >= 0; i--) {
-		 console.log(tweets[i]['id'] + " - " +  tweets[i]['text']);
 		 var cId = tweets[i]['text'];
 		 if(cId == lastReadId ){
 		 	seenTheId = true;
@@ -132,7 +87,6 @@ function processNewTweets(latestId,lastReadId){
 	  	var latestId = getLatestTweet()['text'];
 	  	setLastRead(latestId);
 	  }else{
-		console.log('read Queue length = '+ readQueue.length);
 		passReadQueue();
 	}
 	
@@ -144,11 +98,9 @@ function startThis(){
 	var latestId = getLatestTweet()['text'];
 	
 
-	console.log("latestid = "+ latestId);
-	console.log("lastReadId = "+ lastReadId);
+	
 
 	if(latestId !== lastReadId){
-		console.log('new tweets so do something');
 		if(lastReadId == '---'){
 			setLastRead(latestId);
 		}else{
@@ -164,7 +116,7 @@ function startThis(){
 		console.log("NO NEW TWEETS DO NOTHING");
 	}
 
-	//setLastRead();
+
 	
 }
 
@@ -172,13 +124,10 @@ function startThis(){
 
 function PlaySound() {
     
-     var html = '<audio id="audio1" src="beep-1.wav" style="display:block;" controls="show" preload="auto" autobuffer></audio>';
-   // var el1 = document.createElement('<div></div>');
-   //  document.getElementById("doc").appendChild(el1);
-
- 
+    var html = '<audio id="audio1" src="beep-1.wav" style="display:block;" controls="show" preload="auto" autobuffer></audio>';
     var audio = document.createElement("audio");
-	audio.src = "http://tweet-out.com/static/beep-027.wav";
+    //http://www.soundjay.com/button/beep-06.wav
+	audio.src = "http://www.soundjay.com/button/button-09.wav";
 	document.body.appendChild(audio);
 
     audio.play();
@@ -190,9 +139,6 @@ function init(){
 	getLastRead();
 }
 
-// Get saved last tweet id from ext... if null then get the newest tweet id and save it and exit.
-// Loop through all tweets from oldest bottom first
-// if
 
 
 init();
