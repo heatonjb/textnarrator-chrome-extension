@@ -2,6 +2,8 @@ var lastTweetRead = '---';
 var readQueue = [];
 var speak = false;
 var speaking = false;
+var filterlist = [];
+
 
 
 var tabStorage = [];
@@ -42,8 +44,12 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}
 
 
-    function doReloader(time, isRandom,speakit) {
+    function doReloader(time, isRandom,speakit,filter) {
     	speak = speakit;
+        filterlist = filter.split(',');
+        // console.log('doreloader');
+        // console.log(filterlist);        
+        
         if (time > 0) {
             chrome.tabs.getSelected(null, function(tab) {
 
@@ -323,6 +329,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
              }
              
              sendResponse({tweetorbeep: audible });
+        }
+
+        if (typeof request.getFilter != 'undefined') 
+        {   
+             sendResponse({filter: filterlist });
         }
         
 	  	if (typeof request.passReadQueue != 'undefined') 

@@ -3,19 +3,19 @@ var myInfinity = 10000000000;
 var lastReadId = '---';
 var readQueue = [];
 var audible = "beep";
+var filterList = [];
 
 
 
 
 
+function getTweets() {                          
 
-function getTweets() {
-	var tweet = document.evaluate("//li[@class='js-stream-item stream-item stream-item expanding-stream-item']", document, null, XPathResult.ANY_TYPE, null);
+
+	var tweet = document.evaluate('//li[contains(string(@class),"js-stream-item")]', document, null, XPathResult.ANY_TYPE, null);
 	var iterator = tweet.iterateNext();
-
 	var tweets = [];
-
-
+	
 	while (iterator) {
 		var tid = iterator.getAttribute('data-item-id')
 		var ttext = iterator.getElementsByClassName('tweet-text')[0].textContent;
@@ -68,6 +68,17 @@ function getTweetorBeep(){
 	});
 }
 
+function getFilter(){
+	chrome.runtime.sendMessage({getFilter: 'filter' }, function(response) {
+	  filterList = response.filter;
+	  console.log('filter in client side');
+	  console.log(filterList);
+	});
+}
+
+
+
+
 
 function processNewTweets(latestId,lastReadId){
 	var tweets = getTweets();
@@ -93,6 +104,25 @@ function processNewTweets(latestId,lastReadId){
 
 }
 
+function infilter(text){
+	console.log("infilter - "+ text);
+	var result = false;
+	console.log("filterlist length" + filterList.length);
+	if(filterList.length == 0) result =  true;
+	if(filterList[0] == '') result = true;
+	
+	filterList.forEach(function(filter) {
+    	console.log(filter);
+    	if(text.toLowerCase().indexOf(filter.trim().toLowerCase() ) >= 0){
+    		console.log('filter found ' + filter);
+    		result = true;
+    	}
+	});
+	
+	return result;
+
+}
+
 function startThis(){
 	// var tweetss = getTweets();
 	var latestId = getLatestTweet()['text'];
@@ -100,7 +130,7 @@ function startThis(){
 
 	
 
-	if(latestId !== lastReadId){
+	if(latestId !== lastReadId && infilter(latestId) == true){
 		if(lastReadId == '---'){
 			setLastRead(latestId);
 		}else{
@@ -135,6 +165,7 @@ function PlaySound() {
 
 
 function init(){
+	getFilter();
 	getTweetorBeep();
 	getLastRead();
 }

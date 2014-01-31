@@ -50,12 +50,20 @@ function restoreOptions() {
         		option = 0;
     	    }
     	}
+
+    	var speak = false;
+    	if (document.getElementById('readText').checked == true) {
+    		speak = true;
+    	}
+
+    	var filter = document.getElementById('filter').value;
+    	
         
         
         var views = chrome.extension.getViews();
         for (var i in views) {
             if (views[i].doReloader) {
-                views[i].doReloader(option, isRandom);
+                views[i].doReloader(option, isRandom,speak, filter);
             }
         }
 
@@ -96,12 +104,16 @@ function setTime(){
     	if (document.getElementById('readText').checked == true) {
     		speak = true;
     	}
-        
+
+    	var filter = document.getElementById('filter').value;
+    	
+		bkg.console.log('filter = ' + filter);        
         
         var views = chrome.extension.getViews();
         for (var i in views) {
             if (views[i].doReloader) {
-                views[i].doReloader(option, isRandom,speak);
+            	// bkg.console.log('calling reloader';      
+                views[i].doReloader(option, isRandom,speak,filter);
             }
         }
 }   
